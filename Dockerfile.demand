@@ -2,8 +2,7 @@ FROM ghcr.io/rizwan-kh/azure-devops-pipeline-agent:dev
 
 # Install wget and unzip
 RUN apt-get update --yes \
-  && apt-get install --yes curl unzip ssh-client python apt-transport-https \
-  && apt install python3-pip
+  && apt-get install --yes unzip ssh-client python apt-transport-https python3-pip
 
 # Install kubectl
 ENV KUBECTL_BIN_DIR /usr/local/kubectl/bin
