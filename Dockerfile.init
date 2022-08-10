@@ -1,0 +1,26 @@
+FROM ghcr.io/rizwan-kh/azure-devops-pipeline-agent:dev
+
+# Install kubectl
+ENV KUBECTL_BIN_DIR /usr/local/kubectl/bin
+RUN mkdir --parents $KUBECTL_BIN_DIR
+RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" \
+    && chmod +x kubectl \
+    && mv kubectl $KUBECTL_BIN_DIR/.
+ENV PATH $PATH:$KUBECTL_BIN_DIR
+
+# Install helm
+ENV HELM_BIN_DIR /usr/local/helm/bin
+RUN mkdir --parents $HELM_BIN_DIR
+RUN curl -LO "https://get.helm.sh/helm-v3.6.0-linux-amd64.tar.gz" \
+    && tar -zxvf helm-v3.6.0-linux-amd64.tar.gz \
+    && chmod +x linux-amd64/helm \
+    && mv linux-amd64/helm $HELM_BIN_DIR/.
+ENV PATH $PATH:$HELM_BIN_DIR
+
+# Check that helm is correctly installed
+RUN type helm
+
+RUN chmod g+rwx /root \
+    && mkdir /config \
+    && chmod g+rwx /config \
+    && helm repo add x-ops https://rizwan-kh.github.io/helm-charts/
