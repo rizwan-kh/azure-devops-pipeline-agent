@@ -1,0 +1,82 @@
+FROM ghcr.io/rizwan-kh/azure-devops-pipeline-agent:main
+
+# Install wget and unzip
+RUN apt-get update --yes \
+  && apt-get install --yes unzip ssh-client python apt-transport-https python3-pip
+
+# Install kubectl
+ENV KUBECTL_BIN_DIR /usr/local/kubectl/bin
+RUN mkdir --parents $KUBECTL_BIN_DIR
+RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" \
+    && chmod +x kubectl \
+    && mv kubectl $KUBECTL_BIN_DIR/.
+ENV PATH $PATH:$KUBECTL_BIN_DIR
+
+# Check that kubectl is correctly installed
+RUN type kubectl
+
+# Install Packer
+ENV PACKER_BIN_DIR /usr/local/packer/bin
+RUN mkdir --parents $PACKER_BIN_DIR 
+ENV PACKER_ZIP=https://releases.hashicorp.com/packer/1.7.0/packer_1.7.0_linux_amd64.zip
+RUN curl -sSLo /tmp/packer.zip $PACKER_ZIP && \
+  unzip /tmp/packer.zip -d $PACKER_BIN_DIR && \
+  rm /tmp/packer.zip
+
+ENV PATH $PATH:$PACKER_BIN_DIR
+
+# Check that packer is correctly installed
+RUN type packer
+
+# Install terraform 
+ENV TERRAFORM_BIN_DIR /usr/local/terraform/bin
+RUN mkdir --parents $TERRAFORM_BIN_DIR 
+ENV TERRAFORM_ZIP=https://releases.hashicorp.com/terraform/1.0.5/terraform_1.0.5_linux_amd64.zip
+RUN curl -sSLo /tmp/terraform.zip $TERRAFORM_ZIP && \
+  unzip /tmp/terraform.zip -d $TERRAFORM_BIN_DIR && \
+  rm /tmp/terraform.zip
+ENV PATH $PATH:$TERRAFORM_BIN_DIR
+
+# Check that terraform is correctly installed
+RUN type terraform
+
+# Install ansible
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+RUN apt-add-repository ppa:ansible/ansible
+RUN apt update
+RUN apt install ansible --yes
+
+# Install WINRM
+RUN echo "===> Installing WinRM Ansible..." \
+ && pip3 install "pywinrm>=0.2.0" \
+ && ansible --version
+ 
+# Deployment engine dependency
+RUN pip3 install pyyaml jq
+ 
+# Check that ansible is correctly installed
+RUN type ansible
+
+#latest azure cli install npm is not working for 2.23.0 AZURE_CLI_VERSION
+RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+
+# Install Terragrunt
+ENV TERRAGRUNT_BIN_DIR /usr/local/terragrunt/bin
+RUN mkdir --parents $TERRAGRUNT_BIN_DIR 
+ENV TERRAGRUNT_BINARY=https://github.com/gruntwork-io/terragrunt/releases/download/v0.35.20/terragrunt_linux_amd64
+RUN curl -sSLo $TERRAGRUNT_BIN_DIR/terragrunt $TERRAGRUNT_BINARY && \
+  chmod +x $TERRAGRUNT_BIN_DIR/terragrunt
+
+ENV PATH $PATH:$TERRAGRUNT_BIN_DIR
+
+# Check terragrunt is installed
+RUN type terragrunt
+
+# Install tflint
+RUN curl https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+
+# Install Mysql 
+RUN apt-get update \
+  && apt-get install -y mysql-client \
+  && mysql -V
+
