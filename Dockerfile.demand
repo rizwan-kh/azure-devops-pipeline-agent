@@ -44,7 +44,7 @@ RUN type terraform
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN apt-add-repository ppa:ansible/ansible
 RUN apt update
-RUN apt install ansible
+RUN apt install ansible --yes
 
 # Install WINRM
 RUN echo "===> Installing WinRM Ansible..." \
