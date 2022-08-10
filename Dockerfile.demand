@@ -1,4 +1,4 @@
-FROM ghcr.io/rizwan-kh/azure-devops-pipeline-agent:dev
+FROM ghcr.io/rizwan-kh/azure-devops-pipeline-agent:main
 
 # Install wget and unzip
 RUN apt-get update --yes \
