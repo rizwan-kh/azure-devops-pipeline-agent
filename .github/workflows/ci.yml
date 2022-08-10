@@ -44,7 +44,7 @@ jobs:
           push: true
           tags: init
       - 
-        name: Build and push init image
+        name: Build and push on-demand image
         uses: docker/build-push-action@v3
         with:
           file: Dockerfile.demand
