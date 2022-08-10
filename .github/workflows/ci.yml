@@ -42,11 +42,11 @@ jobs:
         with:
           file: Dockerfile.init
           push: true
-          tags: ${{ steps.meta.images }}:init
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:init
       - 
         name: Build and push on-demand image
         uses: docker/build-push-action@v3
         with:
           file: Dockerfile.demand
           push: true
-          tags: ${{ steps.meta.images }}:on-demand
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:on-demand
