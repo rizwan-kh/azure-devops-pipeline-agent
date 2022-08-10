@@ -42,11 +42,11 @@ jobs:
         with:
           file: Dockerfile.init
           push: true
-          tags: init
+          tags: ${{ steps.meta.images }}:init
       - 
         name: Build and push on-demand image
         uses: docker/build-push-action@v3
         with:
           file: Dockerfile.demand
           push: true
-          tags: on-demand
+          tags: ${{ steps.meta.images }}:on-demand
